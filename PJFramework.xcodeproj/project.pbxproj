@@ -34,6 +34,41 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9C688FB81986A8D500DF6793 /* database */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = database;
+			sourceTree = "<group>";
+		};
+		9C688FB91986A8D500DF6793 /* http */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = http;
+			sourceTree = "<group>";
+		};
+		9C688FBA1986A8D500DF6793 /* managers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = managers;
+			sourceTree = "<group>";
+		};
+		9C688FBB1986A8D500DF6793 /* res */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = res;
+			sourceTree = "<group>";
+		};
+		9C688FBC1986A8D500DF6793 /* utilities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = utilities;
+			sourceTree = "<group>";
+		};
 		9CF4DDEC1985FD91002AA984 = {
 			isa = PBXGroup;
 			children = (
@@ -65,6 +100,11 @@
 		9CF4DE251985FDEA002AA984 /* pjcore */ = {
 			isa = PBXGroup;
 			children = (
+				9C688FB81986A8D500DF6793 /* database */,
+				9C688FB91986A8D500DF6793 /* http */,
+				9C688FBA1986A8D500DF6793 /* managers */,
+				9C688FBB1986A8D500DF6793 /* res */,
+				9C688FBC1986A8D500DF6793 /* utilities */,
 				9CF4DE261985FDEA002AA984 /* Supporting Files */,
 			);
 			path = pjcore;
@@ -302,6 +342,7 @@
 				9CF4DE2E1985FDEA002AA984 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
