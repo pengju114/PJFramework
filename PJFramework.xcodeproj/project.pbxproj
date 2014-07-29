@@ -7,11 +7,41 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9CE7EBCE19873B100013FEF4 /* ASIHTTPRequest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CE7EBCD19873B100013FEF4 /* ASIHTTPRequest.framework */; };
+		9CE7EBF6198748590013FEF4 /* CoreDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE7EBF5198748590013FEF4 /* CoreDatabase.m */; };
+		9CE7EC14198764E00013FEF4 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE7EC0A198764E00013FEF4 /* FMDatabase.m */; };
+		9CE7EC15198764E00013FEF4 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE7EC0C198764E00013FEF4 /* FMDatabaseAdditions.m */; };
+		9CE7EC16198764E00013FEF4 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE7EC0E198764E00013FEF4 /* FMDatabasePool.m */; };
+		9CE7EC17198764E00013FEF4 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE7EC10198764E00013FEF4 /* FMDatabaseQueue.m */; };
+		9CE7EC18198764E00013FEF4 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE7EC13198764E00013FEF4 /* FMResultSet.m */; };
+		9CE7EC1A19879D620013FEF4 /* test.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9CE7EC1919879D610013FEF4 /* test.txt */; };
+		9CE7EC2219879FE80013FEF4 /* pinyin.c in Sources */ = {isa = PBXBuildFile; fileRef = 9CE7EC2019879FE80013FEF4 /* pinyin.c */; };
+		9CE7EC261987A0470013FEF4 /* HttpResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE7EC251987A0470013FEF4 /* HttpResult.m */; };
 		9CF4DE241985FDEA002AA984 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CF4DE231985FDEA002AA984 /* CoreFoundation.framework */; };
 		9CF4DE2A1985FDEA002AA984 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9CF4DE281985FDEA002AA984 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9CE7EBCD19873B100013FEF4 /* ASIHTTPRequest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ASIHTTPRequest.framework; sourceTree = "<group>"; };
+		9CE7EBCF19873DAC0013FEF4 /* core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core.h; sourceTree = "<group>"; };
+		9CE7EBF4198748590013FEF4 /* CoreDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDatabase.h; sourceTree = "<group>"; };
+		9CE7EBF5198748590013FEF4 /* CoreDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDatabase.m; sourceTree = "<group>"; };
+		9CE7EC09198764E00013FEF4 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
+		9CE7EC0A198764E00013FEF4 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
+		9CE7EC0B198764E00013FEF4 /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		9CE7EC0C198764E00013FEF4 /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		9CE7EC0D198764E00013FEF4 /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabasePool.h; sourceTree = "<group>"; };
+		9CE7EC0E198764E00013FEF4 /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabasePool.m; sourceTree = "<group>"; };
+		9CE7EC0F198764E00013FEF4 /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseQueue.h; sourceTree = "<group>"; };
+		9CE7EC10198764E00013FEF4 /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseQueue.m; sourceTree = "<group>"; };
+		9CE7EC11198764E00013FEF4 /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
+		9CE7EC12198764E00013FEF4 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
+		9CE7EC13198764E00013FEF4 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
+		9CE7EC1919879D610013FEF4 /* test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.txt; sourceTree = "<group>"; };
+		9CE7EC2019879FE80013FEF4 /* pinyin.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pinyin.c; sourceTree = "<group>"; };
+		9CE7EC2119879FE80013FEF4 /* pinyin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pinyin.h; sourceTree = "<group>"; };
+		9CE7EC241987A0470013FEF4 /* HttpResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpResult.h; sourceTree = "<group>"; };
+		9CE7EC251987A0470013FEF4 /* HttpResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpResult.m; sourceTree = "<group>"; };
 		9CF4DDF81985FD91002AA984 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		9CF4DE061985FD91002AA984 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		9CF4DE091985FD91002AA984 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -27,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CE7EBCE19873B100013FEF4 /* ASIHTTPRequest.framework in Frameworks */,
 				9CF4DE241985FDEA002AA984 /* CoreFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -37,15 +68,11 @@
 		9C688FB81986A8D500DF6793 /* database */ = {
 			isa = PBXGroup;
 			children = (
+				9CE7EC08198764E00013FEF4 /* fmdb */,
+				9CE7EBF4198748590013FEF4 /* CoreDatabase.h */,
+				9CE7EBF5198748590013FEF4 /* CoreDatabase.m */,
 			);
 			path = database;
-			sourceTree = "<group>";
-		};
-		9C688FB91986A8D500DF6793 /* http */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = http;
 			sourceTree = "<group>";
 		};
 		9C688FBA1986A8D500DF6793 /* managers */ = {
@@ -62,11 +89,40 @@
 			path = res;
 			sourceTree = "<group>";
 		};
-		9C688FBC1986A8D500DF6793 /* utilities */ = {
+		9CE7EC08198764E00013FEF4 /* fmdb */ = {
 			isa = PBXGroup;
 			children = (
+				9CE7EC09198764E00013FEF4 /* FMDatabase.h */,
+				9CE7EC0A198764E00013FEF4 /* FMDatabase.m */,
+				9CE7EC0B198764E00013FEF4 /* FMDatabaseAdditions.h */,
+				9CE7EC0C198764E00013FEF4 /* FMDatabaseAdditions.m */,
+				9CE7EC0D198764E00013FEF4 /* FMDatabasePool.h */,
+				9CE7EC0E198764E00013FEF4 /* FMDatabasePool.m */,
+				9CE7EC0F198764E00013FEF4 /* FMDatabaseQueue.h */,
+				9CE7EC10198764E00013FEF4 /* FMDatabaseQueue.m */,
+				9CE7EC11198764E00013FEF4 /* FMDB.h */,
+				9CE7EC12198764E00013FEF4 /* FMResultSet.h */,
+				9CE7EC13198764E00013FEF4 /* FMResultSet.m */,
+			);
+			path = fmdb;
+			sourceTree = "<group>";
+		};
+		9CE7EC1F19879FE80013FEF4 /* utilities */ = {
+			isa = PBXGroup;
+			children = (
+				9CE7EC2019879FE80013FEF4 /* pinyin.c */,
+				9CE7EC2119879FE80013FEF4 /* pinyin.h */,
 			);
 			path = utilities;
+			sourceTree = "<group>";
+		};
+		9CE7EC231987A0150013FEF4 /* http */ = {
+			isa = PBXGroup;
+			children = (
+				9CE7EC241987A0470013FEF4 /* HttpResult.h */,
+				9CE7EC251987A0470013FEF4 /* HttpResult.m */,
+			);
+			path = http;
 			sourceTree = "<group>";
 		};
 		9CF4DDEC1985FD91002AA984 = {
@@ -89,6 +145,7 @@
 		9CF4DDF71985FD91002AA984 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9CE7EBCD19873B100013FEF4 /* ASIHTTPRequest.framework */,
 				9CF4DDF81985FD91002AA984 /* Foundation.framework */,
 				9CF4DE061985FD91002AA984 /* XCTest.framework */,
 				9CF4DE091985FD91002AA984 /* UIKit.framework */,
@@ -100,12 +157,14 @@
 		9CF4DE251985FDEA002AA984 /* pjcore */ = {
 			isa = PBXGroup;
 			children = (
+				9CE7EBCF19873DAC0013FEF4 /* core.h */,
+				9CE7EC231987A0150013FEF4 /* http */,
+				9CE7EC1F19879FE80013FEF4 /* utilities */,
 				9C688FB81986A8D500DF6793 /* database */,
-				9C688FB91986A8D500DF6793 /* http */,
 				9C688FBA1986A8D500DF6793 /* managers */,
 				9C688FBB1986A8D500DF6793 /* res */,
-				9C688FBC1986A8D500DF6793 /* utilities */,
 				9CF4DE261985FDEA002AA984 /* Supporting Files */,
+				9CE7EC1919879D610013FEF4 /* test.txt */,
 			);
 			path = pjcore;
 			sourceTree = "<group>";
@@ -171,6 +230,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CE7EC1A19879D620013FEF4 /* test.txt in Resources */,
 				9CF4DE2A1985FDEA002AA984 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -182,6 +242,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CE7EC2219879FE80013FEF4 /* pinyin.c in Sources */,
+				9CE7EC18198764E00013FEF4 /* FMResultSet.m in Sources */,
+				9CE7EC17198764E00013FEF4 /* FMDatabaseQueue.m in Sources */,
+				9CE7EBF6198748590013FEF4 /* CoreDatabase.m in Sources */,
+				9CE7EC16198764E00013FEF4 /* FMDatabasePool.m in Sources */,
+				9CE7EC14198764E00013FEF4 /* FMDatabase.m in Sources */,
+				9CE7EC261987A0470013FEF4 /* HttpResult.m in Sources */,
+				9CE7EC15198764E00013FEF4 /* FMDatabaseAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,6 +340,10 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "pjcore/pjcore-Prefix.pch";
@@ -303,6 +375,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "pjcore/pjcore-Prefix.pch";
