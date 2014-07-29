@@ -7,6 +7,7 @@
 //
 
 #import "HttpResult.h"
+#import "HTTPDictionary.h"
 
 
 #define kKeyHeader		       @"header"
@@ -24,12 +25,36 @@
 @interface HttpResult ()
 @property (nonatomic,STRONG) id            responseData;
 @property (nonatomic,STRONG) NSDictionary  *responseHeader;
-@property (nonatomic,WEAK  ) HTTPStatus    statusCode;
+@property (nonatomic,assign) HTTPStatus    statusCode;
 @property (nonatomic,STRONG) NSString      *statusText;
 @end
 
 
 @implementation HttpResult
+
+@synthesize responseData;
+@synthesize responseHeader;
+@synthesize statusText;
+@synthesize statusCode;
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.statusCode = kHTTPError;
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    Release(self.responseData);
+    Release(self.responseHeader);
+    Release(self.statusText);
+#ifndef ARC
+    [super dealloc];
+#endif
+}
 
 -(id) initWithResponseData:(id)respData andResponseHeaders:(NSDictionary *)header{
     return [self initWithResponseData:respData andResponseHeaders:header andStatusText:nil];
@@ -38,13 +63,20 @@
 -(id) initWithResponseData:(id)respData andResponseHeaders:(NSDictionary *)header andStatusText:(NSString *)st{
     if (self = [self init]) {
         self.statusCode = kHTTPError;
-        if (respData && [respData isKindOf:[NSDictionary class]]) {
+        self.responseData = respData;
+        self.responseHeader = header;
+        self.statusText = st;
+        
+        if (respData && [respData isKindOfClass:[NSDictionary class]]) {
             
-            NSDictionary *header = wrapper.getObjectAndIgnoreList(KEY_HEADER);
-            if (header!=null) {
-                statusCode=ConvertUtility.parseInt(header.getString(KEY_STATUS_CODE), statusCode);
-                if (!StringUtility.isEmpty(header.getString(KEY_STATUS_TEXT))) {
-                    statusText=header.getString(KEY_STATUS_TEXT);
+            NSDictionary *httpHeader = [respData singleObjectForKey:kKeyHeader];
+            if (header) {
+                id sc = [httpHeader objectForKey:kKeyStatusCode];
+                self.statusCode=sc?[sc integerValue]:kHTTPError;
+                
+                st = [httpHeader objectForKey:kKeyStatusText];
+                if (isEmptyString(st)) {
+                    self.statusText = st;
                 }
             }
         }
@@ -55,10 +87,31 @@
 /*!
  @abstract 获取服务器返回的数据
  */
--(NSArray *) dataList;
+-(NSArray *) dataList{
+    if (self.responseData && [self.responseData isKindOfClass:[NSDictionary class]]) {
+        return [self.responseData objectForKey:kKeyResult];
+    }
+    return nil;
+}
 
--(NSInteger) pageCount;
+-(NSInteger) pageCount{
+    return [self integerValueForHeader:kKeyPageCount];
+}
 
--(NSInteger) currentPage;
--(NSInteger) totalResultsCount;
+-(NSInteger) currentPage{
+    return [self integerValueForHeader:kKeyCurrentPage];
+}
+
+-(NSInteger) totalResultsCount{
+    return [self integerValueForHeader:kKeyTotalResultCount];
+}
+
+-(NSInteger) integerValueForHeader:(id)key{
+    if (self.responseData && [self.responseData isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *httpHeader = [self.responseData singleObjectForKey:kKeyHeader];
+        return [[httpHeader objectForKey:key] integerValue];
+    }
+    return -1;
+}
+
 @end

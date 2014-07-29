@@ -25,6 +25,14 @@
 }
 
 
+- (void)dealloc
+{
+    Release(databaseName);
+#ifndef ARC
+    [super dealloc];
+#endif
+}
+
 
 /**
  @method

@@ -18,7 +18,7 @@ typedef enum HTTPStatus{
 
 @property (nonatomic,STRONG,readonly) id            responseData;
 @property (nonatomic,STRONG,readonly) NSDictionary  *responseHeader;
-@property (nonatomic,WEAK,  readonly) HTTPStatus    statusCode;
+@property (nonatomic,assign,readonly) HTTPStatus    statusCode;
 @property (nonatomic,STRONG,readonly) NSString      *statusText;
 
 
