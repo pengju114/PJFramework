@@ -78,7 +78,7 @@ typedef enum _ASIExpectedDataFormat{
 
 /*!
  @enum
- @abstract 期望服务器返回的数据被解析成的目标数据类型
+ @abstract 指明服务器返回的数据类型
  */
 typedef enum _ASIResponseDataFormat{
     kASIResponseDataText    = 1<<4,

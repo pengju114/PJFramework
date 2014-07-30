@@ -1,12 +1,13 @@
 //
-//  ApplicationSession.m
+//  NSObject+ApplicationSession.m
 //  PJFramework
 //
-//  Created by 陆振文 on 14-7-29.
+//  Created by 陆振文 on 14-7-30.
 //  Copyright (c) 2014年 pj. All rights reserved.
 //
 
-#import "ApplicationSession.h"
+#import "NSObject+ApplicationSession.h"
+
 
 static NSMutableDictionary *sessionDict = nil;
 static id sessionLock = @"session.lock";
@@ -14,7 +15,9 @@ static id sessionLock = @"session.lock";
 
 #define kSessionKey @"session.id"
 
-@implementation NSObject(ApplicationSession)
+
+@implementation NSObject (ApplicationSession)
+
 
 +(NSMutableDictionary *)sessionDictionary{
     if (!sessionDict) {

@@ -7,7 +7,7 @@
 //
 
 #import "HttpResult.h"
-#import "HTTPDictionary.h"
+#import "NSDictionary+HTTPDictionary.h"
 
 
 #define kKeyHeader		       @"header"

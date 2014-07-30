@@ -1,14 +1,15 @@
 //
-//  ApplicationSession.h
+//  NSObject+ApplicationSession.h
 //  PJFramework
 //
-//  Created by 陆振文 on 14-7-29.
+//  Created by 陆振文 on 14-7-30.
 //  Copyright (c) 2014年 pj. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 
-@interface  NSObject(ApplicationSession)
+@interface NSObject (ApplicationSession)
+
 
 -(void) setSessionId:(NSString *)sessionId;
 -(NSString *) sessionId;

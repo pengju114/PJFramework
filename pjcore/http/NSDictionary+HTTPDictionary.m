@@ -1,14 +1,14 @@
 //
-//  HTTPDictionary.m
+//  NSDictionary+HTTPDictionary.m
 //  PJFramework
 //
-//  Created by 陆振文 on 14-7-29.
+//  Created by 陆振文 on 14-7-30.
 //  Copyright (c) 2014年 pj. All rights reserved.
 //
 
-#import "HTTPDictionary.h"
+#import "NSDictionary+HTTPDictionary.h"
 
-@implementation NSDictionary(HTTPDictionary)
+@implementation NSDictionary (HTTPDictionary)
 
 -(id)singleObjectForKey:(id)key{
     id obj = [self objectForKey:key];
