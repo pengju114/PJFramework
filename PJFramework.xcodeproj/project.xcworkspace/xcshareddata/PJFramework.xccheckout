@@ -12,6 +12,8 @@
 	<dict>
 		<key>34FFB537-FAD2-47F1-9871-E1F212E4EF88</key>
 		<string>https://github.com/pengju114/PJFramework.git</string>
+		<key>CFE117E5-FCEA-49FE-9731-540399069F78</key>
+		<string>https://github.com/pengju114/ASIHttp.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>PJFramework.xcodeproj/project.xcworkspace</string>
@@ -19,6 +21,8 @@
 	<dict>
 		<key>34FFB537-FAD2-47F1-9871-E1F212E4EF88</key>
 		<string>../..</string>
+		<key>CFE117E5-FCEA-49FE-9731-540399069F78</key>
+		<string>../../../ASIHttp</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/pengju114/PJFramework.git</string>
@@ -28,6 +32,14 @@
 	<string>34FFB537-FAD2-47F1-9871-E1F212E4EF88</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>CFE117E5-FCEA-49FE-9731-540399069F78</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ASIHttp</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>

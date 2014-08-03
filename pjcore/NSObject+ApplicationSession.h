@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <ASIHTTPRequest/Reachability.h>
 
 @interface NSObject (ApplicationSession)
 
@@ -25,5 +26,11 @@
 +(void) addSessionObject:(id)object forKey:(id<NSCopying>)key;
 +(id)   sessionObjectForKey:(id<NSCopying>)key;
 +(void) removeSessionObjectForKey:(id<NSCopying>)key;
+
+-(NetworkStatus) networkStatus;
++(NetworkStatus) networkStatus;
+
+-(BOOL)isNetworkAvailable;
++(BOOL)isNetworkAvailable;
 
 @end

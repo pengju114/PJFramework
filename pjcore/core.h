@@ -56,6 +56,8 @@
 
 #define DocumentPath ([NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0])
 
+#define IOSVersion ([[[UIDevice currentDevice] systemVersion] floatValue])
+
 /**
  * 加载资源图片
  */

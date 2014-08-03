@@ -12,6 +12,9 @@
 static NSMutableDictionary *sessionDict = nil;
 static id sessionLock = @"session.lock";
 
+// 在PJCore.h 中改变
+NetworkStatus networkStatus = kNotReachable;
+
 
 #define kSessionKey @"session.id"
 
@@ -66,6 +69,22 @@ static id sessionLock = @"session.lock";
 }
 +(void) removeSessionObjectForKey:(id<NSCopying>)key{
     [[self sessionDictionary] removeObjectForKey:key];
+}
+
++(NetworkStatus)networkStatus{
+    return networkStatus;
+}
+
+-(NetworkStatus)networkStatus{
+    return [NSObject networkStatus];
+}
+
+-(BOOL)isNetworkAvailable{
+    return [NSObject isNetworkAvailable];
+}
+
++(BOOL)isNetworkAvailable{
+    return networkStatus!=kNotReachable;
 }
 
 @end
