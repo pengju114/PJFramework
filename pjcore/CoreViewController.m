@@ -286,6 +286,8 @@
         }
     }
     
+    PJLog(@"cookie %@",request.responseCookies);
+    
     if (responseData) {
         HttpResult *result = [[HttpResult alloc] initWithResponseData:responseData andResponseHeaders:[request responseHeaders]];
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -430,9 +432,10 @@
         label.textColor=[UIColor lightTextColor];
         label.text=tip;
         label.textAlignment=UITextAlignmentCenter;
-        label.layer.cornerRadius=8;
+        label.layer.cornerRadius=6;
+        label.layer.masksToBounds = YES;
         label.center =self.view.center;
-        label.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.4];
+        label.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
         label.alpha=0;
         
         [self.view addSubview:label];
