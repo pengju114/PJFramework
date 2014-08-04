@@ -7,8 +7,8 @@
 //
 
 #import "PJCore.h"
-#import <ASIHTTPRequest/Reachability.h>
-#import <ASIHTTPRequest/ASIHTTPRequest.h>
+#import "Reachability.h"
+#import "ASIHTTPRequest.h"
 
 #define notify_func(name) -(void) application##name
 
@@ -136,6 +136,7 @@ notify_func(WillTerminate){
 
 
 -(void)networkStateChanged:(NSNotification *)n{
+    PJLog(@"framework %@",NSStringFromSelector(_cmd));
     networkStatus=[reachability currentReachabilityStatus];
 }
 

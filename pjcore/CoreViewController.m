@@ -9,7 +9,7 @@
 #import "CoreViewController.h"
 
 #import "NSObject+ApplicationSession.h"
-#import <ASIHTTPRequest/ASIFormDataRequest.h>
+#import "ASIFormDataRequest.h"
 #import "HttpResult.h"
 #import "HttpUtility.h"
 
@@ -118,7 +118,7 @@
  * 发起网络请求
  */
 -(void)asyncRequest:(ASIHTTPRequest *)request {
-    if ([self isNetworkAvailable]) {
+    if (YES) {
         request.defaultResponseEncoding=NSUTF8StringEncoding;
         if ([request isKindOfClass:[ASIFormDataRequest class]]) {
             ASIFormDataRequest *req = (ASIFormDataRequest *)request;

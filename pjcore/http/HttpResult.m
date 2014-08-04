@@ -62,13 +62,13 @@
 
 -(id) initWithResponseData:(id)respData andResponseHeaders:(NSDictionary *)header andStatusText:(NSString *)st{
     if (self = [self init]) {
-        self.statusCode = kHTTPError;
+        self.statusCode = kHTTPOK;//不是Dictionary的情况就是OK
         self.responseData = respData;
         self.responseHeader = header;
         self.statusText = st;
         
         if (respData && [respData isKindOfClass:[NSDictionary class]]) {
-            
+            // 要是是dictionary就判断下状态码
             NSDictionary *httpHeader = [respData singleObjectForKey:kKeyHeader];
             if (header) {
                 id sc = [httpHeader objectForKey:kKeyStatusCode];

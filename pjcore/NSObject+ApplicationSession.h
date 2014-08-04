@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <ASIHTTPRequest/Reachability.h>
+#import "Reachability.h"
 
 @interface NSObject (ApplicationSession)
 
