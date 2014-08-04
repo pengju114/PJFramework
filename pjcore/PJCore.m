@@ -12,7 +12,7 @@
 
 #define notify_func(name) -(void) application##name
 
-#define HttpTestUrl @"http://www.baidu.com"
+#define HttpTestUrl @"www.baidu.com"
 
 static BOOL didInitialize = NO;
 
@@ -132,12 +132,17 @@ notify_func(WillTerminate){
     for (NSString *notify in array) {
         [center removeObserver:self name:notify object:nil];
     }
+    
+    [center removeObserver:self name:kReachabilityChangedNotification object:nil];
+    [reachability stopNotifier];
 }
 
 
 -(void)networkStateChanged:(NSNotification *)n{
-    PJLog(@"framework %@",NSStringFromSelector(_cmd));
+    PJLog(@"framework %@ data:%@",NSStringFromSelector(_cmd),n.userInfo);
+    NetworkStatus status = networkStatus;
     networkStatus=[reachability currentReachabilityStatus];
+    PJLog(@"framework network status change from %u to %u",status,networkStatus);
 }
 
 -(void)chenckNetworkState{

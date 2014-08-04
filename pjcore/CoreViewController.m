@@ -118,7 +118,7 @@
  * 发起网络请求
  */
 -(void)asyncRequest:(ASIHTTPRequest *)request {
-    if (YES) {
+    if ([self isNetworkAvailable]) {
         request.defaultResponseEncoding=NSUTF8StringEncoding;
         if ([request isKindOfClass:[ASIFormDataRequest class]]) {
             ASIFormDataRequest *req = (ASIFormDataRequest *)request;
