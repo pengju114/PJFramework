@@ -13,6 +13,7 @@
 #import "HttpResult.h"
 #import "HttpUtility.h"
 
+#import "ModalAlertDelegate.h"
 
 @interface CoreViewController () <ASIHTTPRequestDelegate>
 @property (nonatomic, STRONG) NSMutableArray *requestQueue ;
@@ -305,7 +306,7 @@
         [self performSelectorOnMainThread:@selector(onNetworkNotAvailable) withObject:nil waitUntilDone:NO];
     }else{
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self httpDidFailure:[[request error] description]];
+            [self httpDidFailure:[[request error] localizedDescription]];
         });
     }
     //收尾工作
@@ -399,9 +400,23 @@
  此方法会等待返回，只能在主线程调用
  @return YES:用户按了确定键，否则NO
  */
-#warning umimplementation
 +(BOOL)showConfirmMessage:(NSString *)title message:(NSString *)message yesButton:(NSString *)yesText cancelButton:(NSString *)cancelText delegate:(id<UIAlertViewDelegate>) delg{
-    return NO;
+    
+    ModalAlertDelegate *delegate = [[ModalAlertDelegate alloc] initWithRunloop:CFRunLoopGetCurrent()];
+    delegate.outsideDelegate = delg;
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:delegate cancelButtonTitle:isEmptyString(cancelText)?@"Cancel":cancelText otherButtonTitles:isEmptyString(yesText)?@"OK":yesText, nil];
+    
+    [alert show];
+    
+    CFRunLoopRun();
+    
+    BOOL ret = delegate.index == alert.firstOtherButtonIndex;
+    
+    Release(delegate);
+    Release(alert);
+    
+    return ret;
 }
 
 /*!
@@ -414,10 +429,75 @@
 /*!
  此方法会等待返回，只能在主线程调用
  */
-#warning umimplementation
 +(NSString *)showInputMessage:(NSString *)title initialText:(NSString *)defaultVal placeholder:(NSString *)holdertext  yesButton:(NSString *)yes cancelButton:(NSString *) cancel secure:(BOOL)sec  delegate:(id<UIAlertViewDelegate>) delg{
-    return nil;
+    
+    BOOL gtIOS5 = IOSVersion>=5.0f;
+    
+    ModalAlertDelegate *delegate = [[ModalAlertDelegate alloc] initWithRunloop:CFRunLoopGetCurrent()];
+    delegate.outsideDelegate = delg;
+    delegate.correctPosition = !gtIOS5;
+    
+    UIAlertView *inputAlert=[[UIAlertView alloc] initWithTitle:title message:gtIOS5?nil:@"\n\n" delegate:delegate cancelButtonTitle:(cancel?cancel:@"Cancel") otherButtonTitles:(yes?yes:@"OK"), nil];
+    
+    if (gtIOS5){
+        inputAlert.alertViewStyle =sec? UIAlertViewStyleSecureTextInput:UIAlertViewStylePlainTextInput;
+    }
+    
+    [inputAlert show];
+    
+    UITextField *inputField = nil;
+    // iOS5 以下
+    if (!gtIOS5) {
+        
+        CGRect dialogRect=[inputAlert bounds];
+        
+        CGFloat gap=10;
+        CGFloat width=dialogRect.size.width-gap*2;
+        CGFloat height=32;
+        
+        inputField=AutoRelease([[UITextField alloc] initWithFrame:CGRectMake(gap, dialogRect.size.height*0.5-height*0.5, width, height)]);
+        inputField.autoresizingMask=UIViewAutoresizingFlexibleWidth;
+        inputField.returnKeyType=UIReturnKeyDone;
+        inputField.keyboardType=UIKeyboardTypeDefault;
+        inputField.keyboardAppearance=UIKeyboardAppearanceAlert;
+        inputField.borderStyle=UITextBorderStyleRoundedRect;
+        inputField.clearButtonMode=UITextFieldViewModeWhileEditing;
+        inputField.contentVerticalAlignment=UIControlContentVerticalAlignmentCenter;
+        inputField.secureTextEntry = sec;
+        
+        [inputAlert addSubview:inputField];
+        
+        [inputField addTarget:self action:@selector(didEndInput:) forControlEvents:UIControlEventEditingDidEndOnExit];
+    }else{
+        inputField = [inputAlert textFieldAtIndex:0];
+    }
+    
+    inputField.placeholder=holdertext;
+    inputField.text=defaultVal;
+    
+    
+    [inputField becomeFirstResponder];
+    
+    
+    CFRunLoopRun();
+    
+    NSString *ret = nil;
+    
+    if (delegate.index == inputAlert.firstOtherButtonIndex) {
+        ret = [NSString stringWithFormat:@"%@",inputField.text];
+        ret = trim(ret);
+    }
+    
+    Release(delegate);
+    Release(inputAlert);
+    
+    return ret;
 }
+
+-(void)didEndInput:(id) sender{
+    [sender resignFirstResponder];
+}
+
 
 /*!
  可在线程中调用
