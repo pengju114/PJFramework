@@ -78,6 +78,7 @@
 
 
 @interface UIViewController (Utility)
++(NSMutableArray *)modalAlertDelegateQueue;
 
 /////////////// 对话框 部分 ///////////////
 #pragma mark Dialog Utility Methods

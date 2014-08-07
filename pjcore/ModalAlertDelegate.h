@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+
+#define kModalAlertDelegateShouldReleaseNotification @"ModalAlertDelegateShouldReleaseNotification"
+
+#define kModalAlertDelegate @"ModalAlertDelegate"
+
 @interface ModalAlertDelegate : NSObject <UIAlertViewDelegate>
 @property(nonatomic,WEAK) id<UIAlertViewDelegate> outsideDelegate;
 @property(nonatomic,assign,readonly) NSInteger index;

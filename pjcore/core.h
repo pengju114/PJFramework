@@ -93,4 +93,6 @@
 #define longString(val)     [NSString stringWithFormat:@"%ld",(val)]
 #define charString(val)     [NSString stringWithFormat:@"%c",(val)]
 
+#define rectCenter(rect)    CGPointMake(rect.size.width*0.5f, rect.size.height*0.5f)
+
 #endif

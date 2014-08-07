@@ -16,7 +16,10 @@
 #import "ModalAlertDelegate.h"
 
 @interface CoreViewController () <ASIHTTPRequestDelegate>
+
+// http
 @property (nonatomic, STRONG) NSMutableArray *requestQueue ;
+
 
 @end
 
@@ -41,6 +44,7 @@
     }
     return _requestQueue;
 }
+
 
 -(void)addToRequestQueue:(ASIHTTPRequest *)req{
     @synchronized(self){
@@ -209,18 +213,36 @@
     int count=0;
     va_start(list, keyValue);
     tmp=keyValue;//第一个参数
+    
+#if debug
+    NSMutableString *debugString = [[NSMutableString alloc] init];
+#endif
+    
+    
     while (tmp) {
         arg[count++] = tmp;
         if (count%2==0) {
             //参数值为空的不发
             if (arg[1]) {
-                [http setPostValue:arg[1] forKey:arg[0]];
+                [http addPostValue:arg[1] forKey:arg[0]];
+#if debug
+                [debugString appendFormat:@"%@=%@&",arg[0],arg[1]];
+#endif
             }
         }
         count%=2;
         tmp=va_arg(list, id);
     }
     va_end(list);
+    
+#if debug
+    if ([debugString length]>0) {
+        [debugString deleteCharactersInRange:NSMakeRange(debugString.length-1, 1)];
+    }
+    
+    PJLog(@"\nmake request: %@\nparameters:%@",url,debugString);
+    Release(debugString);
+#endif
     
     http.requestMethod = METHOD_POST;
     
@@ -231,6 +253,21 @@
 -(void)viewWillDisappear:(BOOL)animated{
     [self stopAllAsyncRequest];
     [super viewWillDisappear:animated];
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeModalAlertDelegateNotification:) name:kModalAlertDelegateShouldReleaseNotification object:nil];
+}
+
+-(void)viewDidDisappear:(BOOL)animated{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kModalAlertDelegateShouldReleaseNotification object:nil];
+}
+
+-(void)removeModalAlertDelegateNotification:(NSNotification *)ntf{
+    
+    [[UIViewController modalAlertDelegateQueue] removeObject:[[ntf userInfo] objectForKey:kModalAlertDelegate]];
+    
+    PJLog(@"framework delete alert delegate %@ remain=%d",[ntf userInfo],[UIViewController modalAlertDelegateQueue].count);
 }
 
 ////////////// http部分 结束  ////////////
@@ -318,8 +355,29 @@
 
 
 
+static NSMutableArray *modalAlertDelegateQueue = nil;
+static NSString * delegateLock = @"delegate.lock";
 
 @implementation UIViewController (Utility)
+
+
+
++(NSMutableArray *)modalAlertDelegateQueue{
+    if (!modalAlertDelegateQueue) {
+        @synchronized(delegateLock){
+            if (!modalAlertDelegateQueue) {
+                modalAlertDelegateQueue = [[NSMutableArray alloc] initWithCapacity:5];
+            }
+        }
+    }
+    return modalAlertDelegateQueue;
+}
+
++(void)enqueueModalAlertDelegate:(ModalAlertDelegate *)delg{
+    
+    [[self modalAlertDelegateQueue] addObject:delg];
+}
+
 
 /////////////// 对话框 部分 ///////////////
 #pragma mark Dialog Utility Methods
@@ -413,6 +471,8 @@
     
     BOOL ret = delegate.index == alert.firstOtherButtonIndex;
     
+    [self enqueueModalAlertDelegate:delegate];
+    
     Release(delegate);
     Release(alert);
     
@@ -488,6 +548,9 @@
         ret = trim(ret);
     }
     
+    
+    [self enqueueModalAlertDelegate:delegate];
+    
     Release(delegate);
     Release(inputAlert);
     
@@ -517,6 +580,8 @@
         label.center =self.view.center;
         label.backgroundColor=[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
         label.alpha=0;
+        
+        label.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
         
         [self.view addSubview:label];
         
@@ -555,14 +620,89 @@
  可在线程中调用
  */
 -(void)showProgressMessage:(NSString *)msg{
-    [self showProgressMessageWithView:nil];
+    
+    CGFloat gap = 5;
+    CGRect  rect;
+    UIFont *font = [UIFont systemFontOfSize:14];
+    UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    activity.hidesWhenStopped = YES;
+    
+    CGSize stringSize = [msg sizeWithFont:font];
+    
+    UILabel *text = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, gap*2+stringSize.width, stringSize.height+4)];
+    [text setFont:font];
+    [text setTextColor:[UIColor whiteColor]];
+    [text setBackgroundColor:[UIColor clearColor]];
+    text.text = msg;
+    text.textAlignment = UITextAlignmentCenter;
+    text.adjustsFontSizeToFitWidth = YES;
+    text.minimumFontSize = 8;
+    
+    rect.size.width = MAX(text.frame.size.width , activity.frame.size.width);
+    
+    CGFloat wg = gap;
+    
+    rect.size.height = text.frame.size.height + activity.frame.size.height + wg;
+    
+    
+    activity.frame = CGRectMake((rect.size.width - activity.frame.size.width) * 0.5f, 0, activity.frame.size.width, activity.frame.size.height);
+    
+    text.frame = CGRectMake((rect.size.width - text.frame.size.width) * 0.5f, activity.frame.origin.y+wg+activity.frame.size.height, text.frame.size.width, text.frame.size.height);
+    
+    
+    
+    UIView *ctr = [[UIView alloc] initWithFrame:rect];
+    [ctr setBackgroundColor:[UIColor clearColor]];
+    
+    [ctr addSubview:text];
+    [ctr addSubview:activity];
+    [activity startAnimating];
+    
+    [self showProgressMessageWithView:ctr];
+    
+    Release(activity);
+    Release(text);
+    Release(ctr);
 }
 /*!
  可在线程中调用
  */
 #warning umimplementation
 -(void)showProgressMessageWithView:(UIView *) view{
+    CGRect rect = CGRectMake(0,0,160,90);
     
+    UIView *ctr = [[UIView alloc] initWithFrame:rect];
+    ctr.layer.cornerRadius = 8;
+    [ctr setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]];
+    
+    view.center = rectCenter(rect);
+    [ctr addSubview:view];
+    
+    ctr.alpha = 0.0f;
+    
+    ctr.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
+    
+    UIView *mask = [[UIView alloc] initWithFrame:self.view.bounds];
+    mask.backgroundColor = [UIColor clearColor];
+    mask.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    mask.userInteractionEnabled = YES;// 挡住所有点击
+    
+    ctr.center = rectCenter(mask.frame);
+    mask.center = rectCenter(self.view.frame);
+    [mask addSubview:ctr];
+    
+    [self.view addSubview:mask];
+    [self.view bringSubviewToFront:mask];
+    
+    
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+    [UIView setAnimationDuration:0.4f];
+    ctr.alpha = 1.0f;
+    [UIView commitAnimations];
+    
+    Release(ctr);
+    Release(mask);
 }
 
 #warning umimplementation

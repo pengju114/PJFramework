@@ -70,8 +70,13 @@
     if (outsideDelegate && [outsideDelegate respondsToSelector:@selector(alertView:didDismissWithButtonIndex:)]) {
         [outsideDelegate alertView:alertView didDismissWithButtonIndex:buttonIndex];
     }
+    
+    [self performSelector:@selector(dispatchReleaseNotification) withObject:nil afterDelay:1];
 }
 
+-(void)dispatchReleaseNotification{
+    [[NSNotificationCenter defaultCenter] postNotificationName:kModalAlertDelegateShouldReleaseNotification object:self userInfo:[NSDictionary dictionaryWithObject:self forKey:kModalAlertDelegate]];
+}
 
 
 -(void)correctPosition:(UIAlertView *)dialog{
