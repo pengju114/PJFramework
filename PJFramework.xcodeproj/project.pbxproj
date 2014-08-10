@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9C0966C219895843007E7E4D /* PJCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C0966C119895843007E7E4D /* PJCore.m */; };
+		9C288B4C1995CD02002B78F9 /* UIView+Extension.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C288B4A1995CD02002B78F9 /* UIView+Extension.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9C288B4D1995CD02002B78F9 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C288B4B1995CD02002B78F9 /* UIView+Extension.m */; };
 		9C38512419912CD80016D751 /* ModalAlertDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 9C38512219912CD80016D751 /* ModalAlertDelegate.h */; };
 		9C38512519912CD80016D751 /* ModalAlertDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C38512319912CD80016D751 /* ModalAlertDelegate.m */; };
 		9C5CBD79198CC8C200A7658C /* CoreViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C5CBD78198CC8C200A7658C /* CoreViewController.m */; };
@@ -123,6 +125,8 @@
 /* Begin PBXFileReference section */
 		9C0966C019895843007E7E4D /* PJCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PJCore.h; sourceTree = "<group>"; };
 		9C0966C119895843007E7E4D /* PJCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PJCore.m; sourceTree = "<group>"; };
+		9C288B4A1995CD02002B78F9 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
+		9C288B4B1995CD02002B78F9 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
 		9C38512219912CD80016D751 /* ModalAlertDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModalAlertDelegate.h; sourceTree = "<group>"; };
 		9C38512319912CD80016D751 /* ModalAlertDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModalAlertDelegate.m; sourceTree = "<group>"; };
 		9C5CBD77198CC8C200A7658C /* CoreViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreViewController.h; sourceTree = "<group>"; };
@@ -466,6 +470,8 @@
 				9C5CBD78198CC8C200A7658C /* CoreViewController.m */,
 				9C38512219912CD80016D751 /* ModalAlertDelegate.h */,
 				9C38512319912CD80016D751 /* ModalAlertDelegate.m */,
+				9C288B4A1995CD02002B78F9 /* UIView+Extension.h */,
+				9C288B4B1995CD02002B78F9 /* UIView+Extension.m */,
 			);
 			path = pjcore;
 			sourceTree = "<group>";
@@ -554,6 +560,7 @@
 				9C5CBD9E198CEB2800A7658C /* FMResultSet.h in Headers */,
 				9C5CBD9F198CEB2800A7658C /* CoreDatabase.h in Headers */,
 				9C5CBDA0198CEB2800A7658C /* NSObject+ApplicationSession.h in Headers */,
+				9C288B4C1995CD02002B78F9 /* UIView+Extension.h in Headers */,
 				9C5CBDA1198CEB2800A7658C /* PJCore.h in Headers */,
 				9C5CBDA2198CEB2800A7658C /* CoreViewController.h in Headers */,
 			);
@@ -629,6 +636,7 @@
 				9C60564D1987E29500650C63 /* HttpUtility.m in Sources */,
 				9C60568B1987F68900650C63 /* UIImageView+HighlightedWebCache.m in Sources */,
 				9CE7EC2219879FE80013FEF4 /* pinyin.c in Sources */,
+				9C288B4D1995CD02002B78F9 /* UIView+Extension.m in Sources */,
 				9C6056551987E3C000650C63 /* GTMBase64.m in Sources */,
 				9C38512519912CD80016D751 /* ModalAlertDelegate.m in Sources */,
 				9C60564B1987E29500650C63 /* DESUtility.m in Sources */,

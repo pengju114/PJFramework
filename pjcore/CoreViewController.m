@@ -14,16 +14,48 @@
 #import "HttpUtility.h"
 
 #import "ModalAlertDelegate.h"
+#import <CoreGraphics/CoreGraphics.h>
+
+#import "UIView+Extension.h"
+#import "DeviceUtility.h"
+
+
 
 @interface CoreViewController () <ASIHTTPRequestDelegate>
-
 // http
 @property (nonatomic, STRONG) NSMutableArray *requestQueue ;
+@property (nonatomic, assign) BOOL           viewDidShow;
 
+
+@property (nonatomic, STRONG) UIView         *correctViewRef;
+@property (nonatomic, assign) BOOL           keyboardDidShow;
+@property (nonatomic, assign) BOOL           viewDidCorrect;
+@property (nonatomic, assign) CGSize         lastKeyboardSize;
+@property (nonatomic, assign) NSTimeInterval keyboardAnimDuration;
+@property (nonatomic, assign) UIViewAnimationCurve keyboardAnimCurve;
 
 @end
 
+#define kCorrectViewAnimationName  @"CorrectViewAnimation"
+
+@interface AssistanceView : UIView
+@property (nonatomic, assign) int assistanceTag;
+@end
+
+
+
 @implementation CoreViewController
+
+@synthesize correctViewRef;
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _viewDidShow = NO;
+    }
+    return self;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -64,6 +96,7 @@
 - (void)dealloc
 {
     Release(_requestQueue);
+    Release(correctViewRef);
 #ifndef ARC
     [super dealloc];
 #endif
@@ -73,12 +106,156 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    _keyboardDidShow = NO;
+    _keyboardAnimDuration = 0.3;
+    _keyboardAnimCurve    = UIViewAnimationCurveEaseInOut;
+    _viewDidCorrect = NO;
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    if (!_viewDidShow) {
+        _viewDidShow = YES;
+        [self viewDidAppearAtFirstTime:animated];
+    }
+    
+    [super viewDidAppear:animated];
+}
+
+-(void)viewDidAppearAtFirstTime:(BOOL)animated{
+    
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [self registerKeyBoardNotification];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeModalAlertDelegateNotification:) name:kModalAlertDelegateShouldReleaseNotification object:nil];
+    
+    [super viewWillAppear:animated];
+}
+-(void)viewDidDisappear:(BOOL)animated{
+    [self unregisterKeyBoardNotification];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kModalAlertDelegateShouldReleaseNotification object:nil];
+    
+    [super viewDidDisappear:animated];
+}
+
+
+-(void)registerKeyBoardNotification{
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [center addObserver:self selector:@selector(KeyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    
+#ifdef __IPHONE_5_0
+    [center addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+#endif
+}
+
+-(void)unregisterKeyBoardNotification{
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [center removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    
+#ifdef __IPHONE_5_0
+    [center removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
+#endif
+}
+
+-(void)keyboardWillShow:(NSNotification *)ntf{
+    
+    _keyboardDidShow = YES;
+    
+    NSDictionary *info = [ntf userInfo];
+    NSValue *value = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
+    CGSize keyboardSize = [value CGRectValue].size;//获取键盘的size值
+    PJLog(@"keyboardWillShow with size %@",NSStringFromCGSize(keyboardSize));
+    
+    _lastKeyboardSize = keyboardSize;
+    //获取键盘出现的动画时间
+    NSValue *animationDurationValue = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+    NSTimeInterval animationDuration;
+    [animationDurationValue getValue:&animationDuration];
+    UIViewAnimationCurve animationCurve = [[[ntf userInfo] valueForKey:UIKeyboardAnimationCurveUserInfoKey] intValue];
+    
+    _keyboardAnimCurve   = animationCurve;
+    _keyboardAnimDuration= animationDuration;
+    
+    [self correctView];
+}
+-(void)KeyboardWillHide:(NSNotification *)ntf{
+    
+    _keyboardDidShow = NO;
+    
+    NSDictionary *info = [ntf userInfo];
+    NSValue *animationDurationValue = [info objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+    NSTimeInterval animationDuration;
+    [animationDurationValue getValue:&animationDuration];
+    UIViewAnimationCurve animationCurve = [[[ntf userInfo] valueForKey:UIKeyboardAnimationCurveUserInfoKey] intValue];
+    
+    _keyboardAnimCurve   = animationCurve;
+    _keyboardAnimDuration= animationDuration;
+    
+    PJLog(@"KeyboardWillHide ");
+    
+    [self restoreView];
+}
+-(void)keyboardWillChangeFrame:(NSNotification *)ntf{
+    NSDictionary *info = [ntf userInfo];
+    NSValue *value = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
+    CGSize keyboardSize = [value CGRectValue].size;//获取键盘的size值
+    PJLog(@"keyboardWillChangeFrame with size %@",NSStringFromCGSize(keyboardSize));
+    
+    _lastKeyboardSize = keyboardSize;
+    
+//    [self correctView];
+}
+
+-(void)correctView{
+    if (correctViewRef) {
+        
+        CGRect rect = [correctViewRef frameInView:self.view];
+        CGFloat screenHeight = [DeviceUtility screenHeight];
+        const CGFloat gap=20;
+        
+        BOOL isLandscape = UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]);
+        CGFloat keyboardHeight = isLandscape?_lastKeyboardSize.width:_lastKeyboardSize.height;
+        
+        CGFloat visibleHeight  =  screenHeight - keyboardHeight - gap;
+        CGFloat y = isLandscape?(rect.origin.x + rect.size.width) : (rect.origin.y + rect.size.height);
+        
+        if (y > visibleHeight) {
+            // 被挡
+            _viewDidCorrect = YES;
+            
+            [self moveViewWithTop:visibleHeight - y];
+        }
+    }
+}
+
+-(void)restoreView{
+    if (correctViewRef && _viewDidCorrect) {
+        [self moveViewWithTop:0];
+        _viewDidCorrect = NO;
+        self.correctViewRef = nil;
+    }
+}
+
+-(void)moveViewWithTop:(CGFloat)top{
+    [UIView beginAnimations:kCorrectViewAnimationName context:nil];
+    [UIView setAnimationCurve:_keyboardAnimCurve];
+    [UIView setAnimationDuration:_keyboardAnimDuration];
+    
+    CGRect r=self.view.frame;
+    
+    CGRect n=CGRectMake(r.origin.x, top, r.size.width, r.size.height);
+    
+    self.view.frame=n;
+    
+    [UIView commitAnimations];
 }
 
 /*
@@ -255,19 +432,10 @@
     [super viewWillDisappear:animated];
 }
 
--(void)viewWillAppear:(BOOL)animated{
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeModalAlertDelegateNotification:) name:kModalAlertDelegateShouldReleaseNotification object:nil];
-}
-
--(void)viewDidDisappear:(BOOL)animated{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kModalAlertDelegateShouldReleaseNotification object:nil];
-}
 
 -(void)removeModalAlertDelegateNotification:(NSNotification *)ntf{
     
     [[UIViewController modalAlertDelegateQueue] removeObject:[[ntf userInfo] objectForKey:kModalAlertDelegate]];
-    
-    PJLog(@"framework delete alert delegate %@ remain=%d",[ntf userInfo],[UIViewController modalAlertDelegateQueue].count);
 }
 
 ////////////// http部分 结束  ////////////
@@ -275,14 +443,13 @@
 
 #pragma mark InputSoft Utility Methods
 
-#warning unimplementation
 -(CGSize)keyboardSize{
-    return CGSizeMake(0, 0);
+    return _lastKeyboardSize;
 }
 
-#warning unimplementation
 -(void) correctViewAvoidingKeyboardShelter:(UIView *)target{
-    
+    self.correctViewRef = target;
+    [self correctView];
 }
 
 
@@ -355,8 +522,28 @@
 
 
 
+
+
+
+
+
+
 static NSMutableArray *modalAlertDelegateQueue = nil;
 static NSString * delegateLock = @"delegate.lock";
+
+
+// 默认对话框动画时长
+#define kAnimationDuration  0.3
+#define kProgressAnimationName  @"ProgressAnimation"
+
+#define kTagProgressMsgRoot        13051
+#define kTagProgressMsgLabelRoot   13052
+#define kTagProgressMsgLabel       13053
+#define kTagProgressMsgMask        13054
+
+
+#define kTagProgressCtr            13055
+#define kTagProgressIndicator      13056
 
 @implementation UIViewController (Utility)
 
@@ -587,7 +774,7 @@ static NSString * delegateLock = @"delegate.lock";
         
         
         [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
+        [UIView setAnimationDuration:kAnimationDuration];
         [UIView setAnimationCurve:UIViewAnimationCurveLinear];
         
         label.alpha=1.0;
@@ -603,7 +790,7 @@ static NSString * delegateLock = @"delegate.lock";
 -(void)handleTipState:(UIView *)view{
     if (view.alpha>0) {
         [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
+        [UIView setAnimationDuration:kAnimationDuration];
         [UIView setAnimationCurve:UIViewAnimationCurveLinear];
         
         view.alpha=0.0;
@@ -620,109 +807,263 @@ static NSString * delegateLock = @"delegate.lock";
  可在线程中调用
  */
 -(void)showProgressMessage:(NSString *)msg{
-    
-    CGFloat gap = 5;
-    CGRect  rect;
-    UIFont *font = [UIFont systemFontOfSize:14];
-    UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    activity.hidesWhenStopped = YES;
-    
-    CGSize stringSize = [msg sizeWithFont:font];
-    
-    UILabel *text = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, gap*2+stringSize.width, stringSize.height+4)];
-    [text setFont:font];
-    [text setTextColor:[UIColor whiteColor]];
-    [text setBackgroundColor:[UIColor clearColor]];
-    text.text = msg;
-    text.textAlignment = UITextAlignmentCenter;
-    text.adjustsFontSizeToFitWidth = YES;
-    text.minimumFontSize = 8;
-    
-    rect.size.width = MAX(text.frame.size.width , activity.frame.size.width);
-    
-    CGFloat wg = gap;
-    
-    rect.size.height = text.frame.size.height + activity.frame.size.height + wg;
-    
-    
-    activity.frame = CGRectMake((rect.size.width - activity.frame.size.width) * 0.5f, 0, activity.frame.size.width, activity.frame.size.height);
-    
-    text.frame = CGRectMake((rect.size.width - text.frame.size.width) * 0.5f, activity.frame.origin.y+wg+activity.frame.size.height, text.frame.size.width, text.frame.size.height);
-    
-    
-    
-    UIView *ctr = [[UIView alloc] initWithFrame:rect];
-    [ctr setBackgroundColor:[UIColor clearColor]];
-    
-    [ctr addSubview:text];
-    [ctr addSubview:activity];
-    [activity startAnimating];
-    
-    [self showProgressMessageWithView:ctr];
-    
-    Release(activity);
-    Release(text);
-    Release(ctr);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // 先在视图中找
+        UIView *progressCtr = [self.view viewWithTag:kTagProgressMsgLabelRoot];
+        if (progressCtr) {
+            PJLog(@"show previous message view");
+            
+            UILabel *label = (UILabel *)[progressCtr viewWithTag:kTagProgressMsgLabel];
+            if (label) {
+                label.text = msg;
+            }
+            
+            [self showProgressMessageWithView:progressCtr];
+        }else{
+            PJLog(@"show new message view");
+            
+            CGFloat gap = 5;
+            CGRect  rect;
+            UIFont  *font = [UIFont systemFontOfSize:14];
+            UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+            activity.hidesWhenStopped = YES;
+            
+            CGSize stringSize = [msg sizeWithFont:font];
+            
+            CGFloat w = MAX(150, gap*2+stringSize.width);
+            UILabel *text = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, w, stringSize.height+4)];
+            [text setFont:font];
+            [text setTextColor:[UIColor whiteColor]];
+            [text setBackgroundColor:[UIColor clearColor]];
+            text.text = msg;
+            text.textAlignment = UITextAlignmentCenter;
+            text.adjustsFontSizeToFitWidth = YES;
+            text.minimumFontSize = 8;
+            text.lineBreakMode = NSLineBreakByTruncatingMiddle;
+            
+            rect.size.width = MAX(text.frame.size.width , activity.frame.size.width);
+            
+            CGFloat wg = gap;
+            
+            rect.size.height = text.frame.size.height + activity.frame.size.height + wg;
+            
+            
+            activity.frame = CGRectMake((rect.size.width - activity.frame.size.width) * 0.5f, 0, activity.frame.size.width, activity.frame.size.height);
+            
+            text.frame = CGRectMake((rect.size.width - text.frame.size.width) * 0.5f, activity.frame.origin.y+wg+activity.frame.size.height, text.frame.size.width, text.frame.size.height);
+            
+            
+            
+            UIView *ctr = [[UIView alloc] initWithFrame:rect];
+            [ctr setBackgroundColor:[UIColor clearColor]];
+            
+            text.tag = kTagProgressMsgLabel;
+            ctr.tag  = kTagProgressMsgLabelRoot;
+            
+            [ctr addSubview:text];
+            [ctr addSubview:activity];
+            [activity startAnimating];
+            
+            [self showProgressMessageWithView:ctr];
+            
+            Release(activity);
+            Release(text);
+            Release(ctr);
+        }
+    });
 }
 /*!
  可在线程中调用
  */
-#warning umimplementation
 -(void)showProgressMessageWithView:(UIView *) view{
-    CGRect rect = CGRectMake(0,0,160,90);
-    
-    UIView *ctr = [[UIView alloc] initWithFrame:rect];
-    ctr.layer.cornerRadius = 8;
-    [ctr setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]];
-    
-    view.center = rectCenter(rect);
-    [ctr addSubview:view];
-    
-    ctr.alpha = 0.0f;
-    
-    ctr.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
-    
-    UIView *mask = [[UIView alloc] initWithFrame:self.view.bounds];
-    mask.backgroundColor = [UIColor clearColor];
-    mask.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    mask.userInteractionEnabled = YES;// 挡住所有点击
-    
-    ctr.center = rectCenter(mask.frame);
-    mask.center = rectCenter(self.view.frame);
-    [mask addSubview:ctr];
-    
-    [self.view addSubview:mask];
-    [self.view bringSubviewToFront:mask];
-    
-    
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-    [UIView setAnimationDuration:0.4f];
-    ctr.alpha = 1.0f;
-    [UIView commitAnimations];
-    
-    Release(ctr);
-    Release(mask);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIView *existMask = [self.view viewWithTag:kTagProgressMsgMask];
+        AssistanceView *existCtr  = nil;
+        if (existMask) {
+            existCtr = (AssistanceView *)[existMask viewWithTag:kTagProgressMsgRoot];
+            
+            if (![existMask containsView:view]) {// 之前没有添加到这里
+                [existCtr removeAllChildren];
+                view.center = rectCenter(existCtr.frame);
+                [existCtr addSubview:view];
+            }
+            existCtr.assistanceTag += 1;
+            
+            PJLog(@"progress exist");
+        }else{
+            PJLog(@"progress create");
+            CGRect rect = CGRectMake(0,0,160,90);
+            
+            AssistanceView *ctr = [[AssistanceView alloc] initWithFrame:rect];
+            ctr.layer.cornerRadius = 8;
+            [ctr setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.6]];
+            
+            view.center = rectCenter(rect);
+            [ctr addSubview:view];
+            
+            ctr.alpha = 0.0f;
+            
+            ctr.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin;
+            
+            UIView *mask = [[UIView alloc] initWithFrame:self.view.bounds];
+            mask.backgroundColor = [UIColor clearColor];
+            mask.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+            mask.userInteractionEnabled = YES;// 挡住所有点击
+            
+            ctr.center = rectCenter(mask.frame);
+            mask.center = rectCenter(self.view.frame);
+            
+            ctr.tag = kTagProgressMsgRoot;
+            mask.tag = kTagProgressMsgMask;
+            
+            ctr.assistanceTag = 1;// 显示一次
+            
+            [mask addSubview:ctr];
+            [self.view addSubview:mask];
+            
+            existMask = AutoRelease(mask);
+            existCtr  = AutoRelease(ctr);
+        }
+        
+        [self.view bringSubviewToFront:existMask];// 确保靠前
+        
+        if (existCtr.assistanceTag > 0) {
+            existMask.hidden = NO;
+        }
+        
+        [UIView beginAnimations:kProgressAnimationName context:nil];
+        [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+        [UIView setAnimationDuration:kAnimationDuration];
+        existCtr.alpha = 1.0f;
+        [UIView commitAnimations];
+    });
 }
 
-#warning umimplementation
 -(void)closeProgressMessage{
+    dispatch_async(dispatch_get_main_queue(), ^{
     
+        UIView *mask = [self.view viewWithTag:kTagProgressMsgMask];
+        if (mask) {
+            AssistanceView *ctr = (AssistanceView *)[mask viewWithTag:kTagProgressMsgRoot];
+            ctr.assistanceTag--;
+            PJLog(@"prepare close progress,showing count %d",ctr.assistanceTag);
+            if (ctr.assistanceTag < 1) {
+                
+                [UIView beginAnimations:kProgressAnimationName context:nil];
+                [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+                [UIView setAnimationDuration:kAnimationDuration];
+                [UIView setAnimationDelegate:self];
+                [UIView setAnimationDidStopSelector:@selector(closeProgressAnimationFinish)];
+                ctr.alpha = 0.0f;
+                [UIView commitAnimations];
+            }
+        }
+    });
+}
+
+-(void)closeProgressAnimationFinish{
+    UIView *mask = [self.view viewWithTag:kTagProgressMsgMask];
+    if (mask) {
+        AssistanceView *ctr = (AssistanceView *)[mask viewWithTag:kTagProgressMsgRoot];
+        PJLog(@"set progress hidden count = %d",ctr.assistanceTag);
+        if (ctr.assistanceTag < 1) {
+            mask.hidden = YES;
+        }
+    }
 }
 
 /*!
  可在线程中调用
  */
-#warning umimplementation
 -(void)showProgress:(BOOL)modal{
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        AssistanceView *ctr = (AssistanceView *)[self.view viewWithTag:kTagProgressCtr];
+        if (!ctr) {
+            UIActivityIndicatorView *act = AutoRelease([[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray]);
+            act.hidesWhenStopped = YES;
+            act.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+            ctr = AutoRelease([[AssistanceView alloc] initWithFrame:modal?self.view.bounds : act.frame]);
+            ctr.backgroundColor = [UIColor clearColor];
+            ctr.assistanceTag = 1;
+            
+            act.tag = kTagProgressIndicator;
+            ctr.tag = kTagProgressCtr;
+            
+            act.center = rectCenter(ctr.frame);
+            
+            [act startAnimating];
+            [ctr addSubview:act];
+            
+            ctr.center = rectCenter(self.view.bounds);
+            ctr.alpha = 0.0;
+            
+            [self.view addSubview:ctr];
+        }else{
+            ctr.assistanceTag += 1;
+            
+            UIView *act = [ctr viewWithTag:kTagProgressIndicator];
+            ctr.frame = modal?self.view.bounds:act.bounds;
+            ctr.center = rectCenter(self.view.bounds);
+        }
+        
+        
+        UIViewAutoresizing asizing = modal?(UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth):(UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin);
+        ctr.autoresizingMask = asizing;
+        
+        if (ctr.assistanceTag > 0) {
+            ctr.hidden = NO;
+        }
+        
+        PJLog(@"progress show count = %d",ctr.assistanceTag);
+        
+        [UIView beginAnimations:kProgressAnimationName context:nil];
+        [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+        [UIView setAnimationDuration:kAnimationDuration];
+        ctr.alpha = 1.0f;
+        [UIView commitAnimations];
+        
+    });
 }
 
-#warning umimplementation
 -(void)closeProgress{
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        AssistanceView *ctr = (AssistanceView *)[self.view viewWithTag:kTagProgressCtr];
+        if (ctr) {
+            ctr.assistanceTag--;
+            
+            PJLog(@"progress close count = %d",ctr.assistanceTag);
+            
+            if (ctr.assistanceTag < 1) {
+                
+                [UIView beginAnimations:kProgressAnimationName context:nil];
+                [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+                [UIView setAnimationDuration:kAnimationDuration];
+                [UIView setAnimationDelegate:self];
+                [UIView setAnimationDidStopSelector:@selector(closeProgressFinish)];
+                ctr.alpha = 0.0f;
+                [UIView commitAnimations];
+            }
+        }
+    });
+}
+
+-(void)closeProgressFinish{
+    AssistanceView *ctr = (AssistanceView *)[self.view viewWithTag:kTagProgressCtr];
+    if (ctr) {
+        if (ctr.assistanceTag < 1) {
+            ctr.hidden = YES;
+        }
+    }
 }
 
 ////////////// 对话框部分结束 /////////////
+
+@end
+
+
+
+@implementation AssistanceView
+
+@synthesize assistanceTag;
 
 @end
