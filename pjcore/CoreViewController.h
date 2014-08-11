@@ -27,6 +27,11 @@
 
 -(void)stopRequest:(ASIHTTPRequest *)request;
 
+/**
+ @abstract 当视图第一次显示完成时调用
+ 注意要触发此方法要在重载viewDidAppear时调用父类实现
+ */
+-(void)viewDidAppearAtFirstTime:(BOOL)animated;
 
 /**
  * 发起网络请求
@@ -78,6 +83,7 @@
 
 
 @interface UIViewController (Utility)
++(NSMutableArray *)modalAlertDelegateQueue;
 
 /////////////// 对话框 部分 ///////////////
 #pragma mark Dialog Utility Methods
