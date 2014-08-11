@@ -211,11 +211,11 @@
     
     _lastKeyboardSize = keyboardSize;
     
-//    [self correctView];
+    [self correctView];
 }
 
 -(void)correctView{
-    if (correctViewRef) {
+    if (correctViewRef && _keyboardDidShow) {
         
         CGRect rect = [correctViewRef frameInView:self.view];
         CGFloat screenHeight = [DeviceUtility screenHeight];
@@ -238,9 +238,9 @@
 
 -(void)restoreView{
     if (correctViewRef && _viewDidCorrect) {
-        [self moveViewWithTop:0];
         _viewDidCorrect = NO;
         self.correctViewRef = nil;
+        [self moveViewWithTop:0];
     }
 }
 
@@ -252,6 +252,8 @@
     CGRect r=self.view.frame;
     
     CGRect n=CGRectMake(r.origin.x, top, r.size.width, r.size.height);
+    
+    PJLog(@"move view to %@",NSStringFromCGRect(n));
     
     self.view.frame=n;
     
@@ -760,8 +762,11 @@ static NSString * delegateLock = @"delegate.lock";
         UILabel *label=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, [tip sizeWithFont:font].width+gap*2, 40)];
         label.font=font;
         label.textColor=[UIColor lightTextColor];
-        label.text=tip;
+        label.lineBreakMode = UILineBreakModeMiddleTruncation;
         label.textAlignment=UITextAlignmentCenter;
+        label.adjustsFontSizeToFitWidth = YES;
+        label.minimumFontSize = 8;
+        label.text=tip;
         label.layer.cornerRadius=6;
         label.layer.masksToBounds = YES;
         label.center =self.view.center;
@@ -835,11 +840,12 @@ static NSString * delegateLock = @"delegate.lock";
             [text setFont:font];
             [text setTextColor:[UIColor whiteColor]];
             [text setBackgroundColor:[UIColor clearColor]];
-            text.text = msg;
             text.textAlignment = UITextAlignmentCenter;
             text.adjustsFontSizeToFitWidth = YES;
             text.minimumFontSize = 8;
             text.lineBreakMode = NSLineBreakByTruncatingMiddle;
+            
+            text.text = msg;
             
             rect.size.width = MAX(text.frame.size.width , activity.frame.size.width);
             
