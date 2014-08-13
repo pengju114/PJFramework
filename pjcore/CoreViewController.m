@@ -150,9 +150,9 @@
     [center addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [center addObserver:self selector:@selector(KeyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
-#ifdef __IPHONE_5_0
-    [center addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
-#endif
+    if (IOSVersion>=5.0) {
+        [center addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+    }
 }
 
 -(void)unregisterKeyBoardNotification{
@@ -160,9 +160,9 @@
     [center removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [center removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     
-#ifdef __IPHONE_5_0
-    [center removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
-#endif
+    if (IOSVersion>=5.0) {
+        [center removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
+    }
 }
 
 -(void)keyboardWillShow:(NSNotification *)ntf{
@@ -217,21 +217,27 @@
 -(void)correctView{
     if (correctViewRef && _keyboardDidShow) {
         
-        CGRect rect = [correctViewRef frameInView:self.view];
+        CGRect rect = [correctViewRef frameInView:[UIApplication sharedApplication].keyWindow];
+        
         CGFloat screenHeight = [DeviceUtility screenHeight];
+        
+        PJLog(@"screenheight = %.1f rect in view %@",screenHeight,NSStringFromCGRect(rect));
+        
         const CGFloat gap=20;
         
-        BOOL isLandscape = UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]);
-        CGFloat keyboardHeight = isLandscape?_lastKeyboardSize.width:_lastKeyboardSize.height;
+        BOOL isLandscape = UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
+        CGFloat keyboardHeight = isLandscape?_lastKeyboardSize.width : _lastKeyboardSize.height;
         
         CGFloat visibleHeight  =  screenHeight - keyboardHeight - gap;
-        CGFloat y = isLandscape?(rect.origin.x + rect.size.width) : (rect.origin.y + rect.size.height);
+        
+        
+        CGFloat y = rect.origin.y + rect.size.height;
         
         if (y > visibleHeight) {
             // 被挡
             _viewDidCorrect = YES;
             
-            [self moveViewWithTop:visibleHeight - y];
+            [self moveViewWithTop:visibleHeight - y + [self extendedTop]];
         }
     }
 }
@@ -240,8 +246,32 @@
     if (correctViewRef && _viewDidCorrect) {
         _viewDidCorrect = NO;
         self.correctViewRef = nil;
-        [self moveViewWithTop:0];
+        [self moveViewWithTop:[self extendedTop]];
     }
+}
+
+-(CGFloat)extendedTop{
+    CGFloat top = 0;
+    
+    if (IOSVersion>=7.0) {
+        UIRectEdge edge = self.edgesForExtendedLayout;
+        if ((edge & UIRectEdgeTop) == UIRectEdgeNone) {
+            BOOL isLandscape = UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
+            CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
+            top += isLandscape? statusBarSize.width:statusBarSize.height;
+#if debug
+            PJLog(@"~~~statusBarFrame %@",NSStringFromCGRect([[UIApplication sharedApplication] statusBarFrame]));
+#endif
+            if (self.navigationController) {
+#if debug
+                PJLog(@"~~~navigationBarFrame %@",NSStringFromCGRect(self.navigationController.navigationBar.frame));
+#endif
+                top += self.navigationController.navigationBar.frame.size.height;
+            }
+        }
+    }
+    
+    return top;
 }
 
 -(void)moveViewWithTop:(CGFloat)top{
@@ -835,7 +865,7 @@ static NSString * delegateLock = @"delegate.lock";
             
             CGSize stringSize = [msg sizeWithFont:font];
             
-            CGFloat w = MAX(150, gap*2+stringSize.width);
+            CGFloat w = fmaxf(140, gap*2+stringSize.width);
             UILabel *text = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, w, stringSize.height+4)];
             [text setFont:font];
             [text setTextColor:[UIColor whiteColor]];
@@ -847,7 +877,7 @@ static NSString * delegateLock = @"delegate.lock";
             
             text.text = msg;
             
-            rect.size.width = MAX(text.frame.size.width , activity.frame.size.width);
+            rect.size.width = fmaxf(text.frame.size.width , activity.frame.size.width);
             
             CGFloat wg = gap;
             

@@ -39,6 +39,9 @@
         while (![superView isEqual:(tmp = tmp.superview)]) {
             x += tmp.frame.origin.x;
             y += tmp.frame.origin.y;
+            if ([tmp isKindOfClass:[UIScrollView class]]) {
+                y -= ((UIScrollView *)tmp).contentOffset.y;
+            }
         }
         
         return CGRectMake(x, y, self.frame.size.width, self.frame.size.height);
