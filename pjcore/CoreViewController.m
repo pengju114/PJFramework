@@ -250,30 +250,6 @@
     }
 }
 
--(CGFloat)extendedTop{
-    CGFloat top = 0;
-    
-    if (IOSVersion>=7.0) {
-        UIRectEdge edge = self.edgesForExtendedLayout;
-        if ((edge & UIRectEdgeTop) == UIRectEdgeNone) {
-            BOOL isLandscape = UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
-            CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
-            top += isLandscape? statusBarSize.width:statusBarSize.height;
-#if debug
-            PJLog(@"~~~statusBarFrame %@",NSStringFromCGRect([[UIApplication sharedApplication] statusBarFrame]));
-#endif
-            if (self.navigationController) {
-#if debug
-                PJLog(@"~~~navigationBarFrame %@",NSStringFromCGRect(self.navigationController.navigationBar.frame));
-#endif
-                top += self.navigationController.navigationBar.frame.size.height;
-            }
-        }
-    }
-    
-    return top;
-}
-
 -(void)moveViewWithTop:(CGFloat)top{
     [UIView beginAnimations:kCorrectViewAnimationName context:nil];
     [UIView setAnimationCurve:_keyboardAnimCurve];
@@ -1093,6 +1069,30 @@ static NSString * delegateLock = @"delegate.lock";
 }
 
 ////////////// 对话框部分结束 /////////////
+
+-(CGFloat)extendedTop{
+    CGFloat top = 0;
+    
+    if (IOSVersion>=7.0) {
+        UIRectEdge edge = self.edgesForExtendedLayout;
+        if ((edge & UIRectEdgeTop) == UIRectEdgeNone) {
+            BOOL isLandscape = UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
+            CGSize statusBarSize = [[UIApplication sharedApplication] statusBarFrame].size;
+            top += isLandscape? statusBarSize.width:statusBarSize.height;
+#if debug
+            PJLog(@"~~~statusBarFrame %@",NSStringFromCGRect([[UIApplication sharedApplication] statusBarFrame]));
+#endif
+            if (self.navigationController) {
+#if debug
+                PJLog(@"~~~navigationBarFrame %@",NSStringFromCGRect(self.navigationController.navigationBar.frame));
+#endif
+                top += self.navigationController.navigationBar.frame.size.height;
+            }
+        }
+    }
+    
+    return top;
+}
 
 @end
 
