@@ -9,6 +9,8 @@
 #import "HttpUtility.h"
 #import "XMLElement.h"
 
+#import "core.h"
+
 #define NodeListItem             @"item"
 
 

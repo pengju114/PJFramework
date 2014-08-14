@@ -20,6 +20,9 @@
 #import "DeviceUtility.h"
 
 
+#import "core.h"
+
+
 
 @interface CoreViewController () <ASIHTTPRequestDelegate>
 // http
@@ -292,9 +295,9 @@
         for (ASIHTTPRequest *req in _requestQueue) {
             req.delegate = nil;
             [req cancel];
+            
+            [self removeFromRequestQueue:req];
         }
-        // 删除自己的http请求列表
-        [_requestQueue removeAllObjects];
     }
 }
 
@@ -316,6 +319,8 @@
         }
         
         // 会话维护
+        request.useSessionPersistence = YES;
+        
         if (notEmptyString([self sessionId])) {
             NSString *session=[NSString stringWithFormat:@"JSESSIONID=%@",[self sessionId]];
             [request addRequestHeader:@"Cookie" value:session];
@@ -521,6 +526,7 @@
             [self httpDidFailure:[[request error] localizedDescription]];
         });
     }
+    PJLog(@"http fail %@",[[request error] localizedDescription]);
     //收尾工作
     [self removeFromRequestQueue:request];
 }

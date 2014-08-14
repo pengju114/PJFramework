@@ -10,6 +10,8 @@
 #import "Reachability.h"
 #import "ASIHTTPRequest.h"
 
+#import "core.h"
+
 #define notify_func(name) -(void) application##name
 
 #define HttpTestUrl @"www.baidu.com"

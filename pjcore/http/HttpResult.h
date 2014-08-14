@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "core.h"
 
 typedef enum HTTPStatus{
     kHTTPOK       = 0,

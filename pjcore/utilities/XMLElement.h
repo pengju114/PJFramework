@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+#import "core.h"
 
 // 暂时不使用
 typedef enum XMLElementType{

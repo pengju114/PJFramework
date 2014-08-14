@@ -10,6 +10,7 @@
 #import "GTMBase64.h"
 #import <CommonCrypto/CommonCrypto.h>
 
+#import "core.h"
 
 
 @implementation DESUtility

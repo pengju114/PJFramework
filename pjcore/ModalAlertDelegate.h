@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "core.h"
+
 
 #define kModalAlertDelegateShouldReleaseNotification @"ModalAlertDelegateShouldReleaseNotification"
 

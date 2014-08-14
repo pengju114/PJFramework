@@ -3,3 +3,6 @@
 #import "FMDatabaseAdditions.h"
 #import "FMDatabaseQueue.h"
 #import "FMDatabasePool.h"
+
+
+#import "core.h"

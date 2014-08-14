@@ -19,6 +19,9 @@
 #import "GTMBase64.h"
 #import "GTMDefines.h"
 
+
+#import "core.h"
+
 static const char *kBase64EncodeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static const char *kWebSafeBase64EncodeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 static const char kBase64PaddingChar = '=';
