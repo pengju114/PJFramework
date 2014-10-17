@@ -65,6 +65,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        _lastKeyboardSize = CGSizeZero;
     }
     return self;
 }
@@ -84,14 +85,14 @@
 -(void)addToRequestQueue:(ASIHTTPRequest *)req{
     @synchronized(self){
         [[self requestQueue] addObject:req];
-        [self httpRequestCountDidChange:_requestQueue.count];
+        [self httpRequestCountDidChange:(int)_requestQueue.count];
     }
 }
 
 -(void)removeFromRequestQueue:(ASIHTTPRequest *)req{
     @synchronized(self){
         [[self requestQueue] removeObject:req];
-        [self httpRequestCountDidChange:_requestQueue.count];
+        [self httpRequestCountDidChange:(int)_requestQueue.count];
     }
 }
 
@@ -153,9 +154,10 @@
     [center addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [center addObserver:self selector:@selector(KeyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
-    if (IOSVersion>=5.0) {
-        [center addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
-    }
+//    if (IOSVersion>=5.0) {
+    // 发此通知肯定会发keyboardWillShow
+//        [center addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+//    }
 }
 
 -(void)unregisterKeyBoardNotification{
@@ -163,9 +165,9 @@
     [center removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [center removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     
-    if (IOSVersion>=5.0) {
-        [center removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
-    }
+//    if (IOSVersion>=5.0) {
+//        [center removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
+//    }
 }
 
 -(void)keyboardWillShow:(NSNotification *)ntf{
@@ -206,16 +208,17 @@
     
     [self restoreView];
 }
--(void)keyboardWillChangeFrame:(NSNotification *)ntf{
-    NSDictionary *info = [ntf userInfo];
-    NSValue *value = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
-    CGSize keyboardSize = [value CGRectValue].size;//获取键盘的size值
-    PJLog(@"keyboardWillChangeFrame with size %@",NSStringFromCGSize(keyboardSize));
-    
-    _lastKeyboardSize = keyboardSize;
-    
-    [self correctView];
-}
+//
+//-(void)keyboardWillChangeFrame:(NSNotification *)ntf{
+//    NSDictionary *info = [ntf userInfo];
+//    NSValue *value = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
+//    CGSize keyboardSize = [value CGRectValue].size;//获取键盘的size值
+//    PJLog(@"keyboardWillChangeFrame with size %@",NSStringFromCGSize(keyboardSize));
+//    
+//    _lastKeyboardSize = keyboardSize;
+//    
+//    [self correctView];
+//}
 
 -(void)correctView{
     if (correctViewRef && _keyboardDidShow) {
@@ -226,7 +229,7 @@
         
         PJLog(@"screenheight = %.1f rect in view %@",screenHeight,NSStringFromCGRect(rect));
         
-        const CGFloat gap=20;
+        const CGFloat gap=0;// 加上gap在有多个输入框在滚动视图里面时会有露底的情况
         
         BOOL isLandscape = UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
         CGFloat keyboardHeight = isLandscape?_lastKeyboardSize.width : _lastKeyboardSize.height;
@@ -240,7 +243,8 @@
             // 被挡
             _viewDidCorrect = YES;
             
-            [self moveViewWithTop:visibleHeight - y + [self extendedTop]];
+            [self moveViewWithTop:visibleHeight - y + [self extendedTop] + self.view.frame
+             .origin.y];// 在原来的基础上上移
         }
     }
 }
@@ -320,11 +324,6 @@
         
         // 会话维护
         request.useSessionPersistence = YES;
-        
-        if (notEmptyString([self sessionId])) {
-            NSString *session=[NSString stringWithFormat:@"JSESSIONID=%@",[self sessionId]];
-            [request addRequestHeader:@"Cookie" value:session];
-        }
         
         request.delegate=self;
         [self addToRequestQueue:request];
@@ -770,7 +769,7 @@ static NSString * delegateLock = @"delegate.lock";
     
     dispatch_async(dispatch_get_main_queue(), ^{
         UIFont *font=[UIFont systemFontOfSize:16];
-        CGFloat gap=40;
+        CGFloat gap=20;
         UILabel *label=[[UILabel alloc] initWithFrame:CGRectMake(0, 0, [tip sizeWithFont:font].width+gap*2, 40)];
         label.font=font;
         label.textColor=[UIColor lightTextColor];
@@ -814,7 +813,7 @@ static NSString * delegateLock = @"delegate.lock";
         
         [UIView commitAnimations];
         
-        [self performSelector:@selector(handleTipState:) withObject:view afterDelay:0.9];
+        [self performSelector:@selector(handleTipState:) withObject:view afterDelay:kAnimationDuration*3];
     }else{
         [view removeFromSuperview];
     }
@@ -840,14 +839,16 @@ static NSString * delegateLock = @"delegate.lock";
             PJLog(@"show new message view");
             
             CGFloat gap = 5;
-            CGRect  rect;
+            
+            CGRect  rect = CGRectMake(0, 0, 0, 0);// 不初始化在iOS7.1.1以下iOS7.0.0以上会崩溃
+            
             UIFont  *font = [UIFont systemFontOfSize:14];
             UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
             activity.hidesWhenStopped = YES;
             
             CGSize stringSize = [msg sizeWithFont:font];
             
-            CGFloat w = fmaxf(140, gap*2+stringSize.width);
+            CGFloat w = fminf(140, gap*2+stringSize.width);
             UILabel *text = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, w, stringSize.height+4)];
             [text setFont:font];
             [text setTextColor:[UIColor whiteColor]];

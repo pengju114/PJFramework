@@ -80,7 +80,7 @@
 +(NSString *)encryptWithMD5:(NSString *)string{
     const char    *characters=[string UTF8String];
     unsigned char result[CC_MD5_DIGEST_LENGTH];
-    int charCount=strlen(characters);
+    int charCount=(int)strlen(characters);
     
     CC_MD5(characters, charCount, result);
     

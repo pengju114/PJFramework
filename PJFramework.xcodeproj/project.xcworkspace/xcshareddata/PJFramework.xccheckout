@@ -10,8 +10,10 @@
 	<string>PJFramework</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>34FFB537-FAD2-47F1-9871-E1F212E4EF88</key>
+		<key>8D8FB8B43033C63B350D989BE24C618F935F3E3D</key>
 		<string>https://github.com/pengju114/PJFramework.git</string>
+		<key>C7C345EF45BAF6B2AFA936687DA95777E4CA8C28</key>
+		<string>https://github.com/pengju114/ASIHTTPRequest.git</string>
 		<key>CFE117E5-FCEA-49FE-9731-540399069F78</key>
 		<string>https://github.com/pengju114/ASIHttp.git</string>
 	</dict>
@@ -19,17 +21,19 @@
 	<string>PJFramework.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>34FFB537-FAD2-47F1-9871-E1F212E4EF88</key>
+		<key>8D8FB8B43033C63B350D989BE24C618F935F3E3D</key>
 		<string>../..</string>
+		<key>C7C345EF45BAF6B2AFA936687DA95777E4CA8C28</key>
+		<string>../../../ASIHTTPRequest</string>
 		<key>CFE117E5-FCEA-49FE-9731-540399069F78</key>
 		<string>../../../ASIHttp</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/pengju114/PJFramework.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>34FFB537-FAD2-47F1-9871-E1F212E4EF88</string>
+	<string>8D8FB8B43033C63B350D989BE24C618F935F3E3D</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
@@ -44,7 +48,15 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>34FFB537-FAD2-47F1-9871-E1F212E4EF88</string>
+			<string>C7C345EF45BAF6B2AFA936687DA95777E4CA8C28</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ASIHTTPRequest</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>8D8FB8B43033C63B350D989BE24C618F935F3E3D</string>
 			<key>IDESourceControlWCCName</key>
 			<string>PJFramework</string>
 		</dict>

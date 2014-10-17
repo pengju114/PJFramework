@@ -333,7 +333,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"<%@ %@>...has %u child(ren)...</%@>",name,[self attributeString],[self childrenCount],name];
+    return [NSString stringWithFormat:@"<%@ %@>...has %u child(ren)...</%@>",name,[self attributeString],(int)[self childrenCount],name];
 }
 
 -(NSString *)attributeString{
