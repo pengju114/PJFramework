@@ -229,7 +229,7 @@
         
         PJLog(@"screenheight = %.1f rect in view %@",screenHeight,NSStringFromCGRect(rect));
         
-        const CGFloat gap=0;// 加上gap在有多个输入框在滚动视图里面时会有露底的情况
+        const CGFloat gap=0;// 加上gap在有多个输入框在滚动视图里面时，从上一输入框切换到下一输入框（此输入框网上滚才可见），有时会有露底的情况
         
         BOOL isLandscape = UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
         CGFloat keyboardHeight = isLandscape?_lastKeyboardSize.width : _lastKeyboardSize.height;

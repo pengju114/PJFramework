@@ -299,7 +299,7 @@
     int count = [set columnCount];
     while ([set next]) {
         NSMutableDictionary *dic = [[NSMutableDictionary alloc] initWithCapacity:count];
-        for (int i=0; i<count; count++) {
+        for (int i=0; i<count; i++) {
             [dic setObject:[set objectForColumnIndex:i] forKey:[set columnNameForIndex:i]];
         }
         [array addObject:dic];

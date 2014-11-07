@@ -115,7 +115,6 @@
 		9CE7EC16198764E00013FEF4 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE7EC0E198764E00013FEF4 /* FMDatabasePool.m */; };
 		9CE7EC17198764E00013FEF4 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE7EC10198764E00013FEF4 /* FMDatabaseQueue.m */; };
 		9CE7EC18198764E00013FEF4 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE7EC13198764E00013FEF4 /* FMResultSet.m */; };
-		9CE7EC1A19879D620013FEF4 /* test.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9CE7EC1919879D610013FEF4 /* test.txt */; };
 		9CE7EC2219879FE80013FEF4 /* pinyin.c in Sources */ = {isa = PBXBuildFile; fileRef = 9CE7EC2019879FE80013FEF4 /* pinyin.c */; };
 		9CE7EC261987A0470013FEF4 /* HttpResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE7EC251987A0470013FEF4 /* HttpResult.m */; };
 		9CF4DE241985FDEA002AA984 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CF4DE231985FDEA002AA984 /* CoreFoundation.framework */; };
@@ -229,7 +228,6 @@
 		9CE7EC11198764E00013FEF4 /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
 		9CE7EC12198764E00013FEF4 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
 		9CE7EC13198764E00013FEF4 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
-		9CE7EC1919879D610013FEF4 /* test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.txt; sourceTree = "<group>"; };
 		9CE7EC2019879FE80013FEF4 /* pinyin.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pinyin.c; sourceTree = "<group>"; };
 		9CE7EC2119879FE80013FEF4 /* pinyin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pinyin.h; sourceTree = "<group>"; };
 		9CE7EC241987A0470013FEF4 /* HttpResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpResult.h; sourceTree = "<group>"; };
@@ -461,7 +459,6 @@
 				9C688FBA1986A8D500DF6793 /* managers */,
 				9C688FBB1986A8D500DF6793 /* res */,
 				9CF4DE261985FDEA002AA984 /* Supporting Files */,
-				9CE7EC1919879D610013FEF4 /* test.txt */,
 				9CB4B9011988C2FD00EEEBB0 /* NSObject+ApplicationSession.h */,
 				9CB4B9021988C2FD00EEEBB0 /* NSObject+ApplicationSession.m */,
 				9C0966C019895843007E7E4D /* PJCore.h */,
@@ -618,7 +615,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9CE7EC1A19879D620013FEF4 /* test.txt in Resources */,
 				9CF4DE2A1985FDEA002AA984 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
